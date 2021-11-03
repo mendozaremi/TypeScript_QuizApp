@@ -1,11 +1,4 @@
-import { QuestionCard } from "./components/QuestionCard";
-import { shuffleArray } from "./utils";
-
-export enum Difficulty {
-  EASY = "easy",
-  MEDIUM = "medium",
-  HARD = "hard"
-}
+import { shuffleArray } from './utils';
 
 export type Question = {
   category: string;
@@ -14,19 +7,21 @@ export type Question = {
   incorrect_answers: string[];
   question: string;
   type: string;
+};
+
+export enum Difficulty {
+  EASY = "easy",
+  MEDIUM = "medium",
+  HARD = "hard",
 }
 
-export type QuestionState = Question & { answers: string[]};
+export type QuestionsState = Question & { answers: string[] };
 
-export const fetchQuizQuestions = async (amount: number, difficulty: Difficulty) => {
+export const fetchQuizQuestions = async (amount: number, difficulty: Difficulty): Promise<QuestionsState[]> => {
   const endpoint = `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}&type=multiple`;
-  // await fetch itselfs then await when we convert to json
   const data = await (await fetch(endpoint)).json();
   return data.results.map((question: Question) => ({
-      ...question, 
-      answers: shuffleArray([
-        ...question.incorrect_answers,
-         question.correct_answer
-        ]),
-    }))
-}
+    ...question,
+    answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+  }))
+};
